@@ -1,0 +1,14 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  YourVendor\AdminerBundle\:
+    resource: '../../'
+    exclude: '../../{DependencyInjection,Resources,Tests}'
+
+  # Controllers
+  YourVendor\AdminerBundle\Controller\AdminerController:
+    arguments:
+    tags: [ 'controller.service_arguments' ]
