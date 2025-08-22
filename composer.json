@@ -1,0 +1,17 @@
+{
+  "name": "bam-bam-bigelow/adminer-bundle",
+  "description": "Symfony bundle to embed Adminer under /admin/adminer with ROLE_ADMIN access",
+  "type": "symfony-bundle",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "YourVendor\\AdminerBundle\\": "src/"
+    }
+  },
+  "require": {
+    "php": ">=7.4",
+    "symfony/framework-bundle": "^5.0"
+  },
+  "extra": {
+  }
+}
