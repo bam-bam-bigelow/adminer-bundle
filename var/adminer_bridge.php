@@ -18,44 +18,31 @@ function ob_flush(): void {
 }
 
 
-/**
- * Заглушка для flush(): ничего не делает.
- */
 function flush(): void {
 	// noop
 }
 
 
-/**
- * Если нужно полностью подавить заголовки, раскомментируй заглушки ниже.
- * По умолчанию их не трогаем: PHP не отправит заголовки, пока мы ничего не отдали в вывод.
- */
+function session_start(): void {
+	// noop
+}
 
-// function header(string $header, bool $replace = true, int $response_code = 0): void
-// {
-//     // noop — игнорируем любые header() из adminer.php
-// }
-//
-// function setcookie(
-//     string $name,
-//     string $value = "",
-//     array|int $expires_or_options = 0,
-//     string $path = "",
-//     string $domain = "",
-//     bool $secure = false,
-//     bool $httponly = false
-// ): bool {
-//     // noop: куки из Adminer нам не нужны в встраиваемом режиме
-//     return true;
-// }
-//
-// function headers_sent(?string &$file = null, ?int &$line = null): bool
-// {
-//     // Сообщаем, что заголовки НЕ отправлены — чтобы Adminer не паниковал
-//     $file = null;
-//     $line = 0;
-//     return false;
-// }
+
+function header(string $header = '', bool $replace = true, int $response_code = 0): void {
+	// noop - игнорируем любые header() из adminer.php
+}
+
+
+function session_write_close(): bool {
+	// noop - игнорируем закрытие сессии
+	return true;
+}
+
+
+function session_regenerate_id(bool $delete_old_session = false): bool {
+	// noop - игнорируем регенерацию ID сессии
+	return true;
+}
 
 /**
  * Стартуем буфер: всё, что выведет adminer.php, попадёт сюда.
@@ -73,6 +60,7 @@ ob_implicit_flush(false);
 
 // Подключаем реальный adminer.php (лежит рядом, в этом же каталоге var/)
 $adminerPath = __DIR__ . '/adminer.php';
+$adminerPathModified = __DIR__ . '/adminer_modified.php';
 if (!\is_file($adminerPath)) {
 	// Завершаем буфер и бросаем исключение в «верхний» код
 	if (\ob_get_level() > 0) {
@@ -81,7 +69,21 @@ if (!\is_file($adminerPath)) {
 	throw new \RuntimeException('Adminer file not found: ' . $adminerPath);
 }
 
-require $adminerPath;
+if (!file_exists($adminerPathModified)) {
+	copy($adminerPath, $adminerPathModified);
+	// replace session_start() with our stub
+	$adminerCode = file_get_contents($adminerPathModified);
+	$adminerCode = preg_replace('#session_start\(\);#', '\AdminerSandbox\session_start();', $adminerCode);
+	$adminerCode = preg_replace('#session_regenerate_id\(\);#', '\AdminerSandbox\session_regenerate_id();', $adminerCode);
+	$adminerCode = preg_replace('#ob\_flush\(\);#', '\AdminerSandbox\ob_flush();', $adminerCode);
+	$adminerCode = preg_replace('#;flush\(\);#', '; \AdminerSandbox\flush();', $adminerCode);
+	$adminerCode = preg_replace('#session_write_close\(\);#', '\AdminerSandbox\session_write_close();', $adminerCode);
+	$adminerCode = preg_replace('#}header\(#', '} \AdminerSandbox\header(', $adminerCode);
+	$adminerCode = preg_replace('#;header\(#', '; \AdminerSandbox\header(', $adminerCode);
+	file_put_contents($adminerPathModified, $adminerCode);
+}
+
+require $adminerPathModified;
 
 // Закрываем буфер (колбэк проглотит остатки вывода)
 if (\ob_get_level() > 0) {
