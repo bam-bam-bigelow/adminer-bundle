@@ -1,3 +1,0 @@
-adminer_bundle:
-  resource: ../../Controller/
-  type: annotation
