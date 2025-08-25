@@ -32,27 +32,27 @@ class AdminerController extends AbstractController
 
 		$response = new Response($html, 200, [
 			'Content-Type'           => 'text/html; charset=UTF-8',
-			'X-Frame-Options'        => 'SAMEORIGIN',
-			'X-Content-Type-Options' => 'nosniff',
-			'Referrer-Policy'        => 'same-origin',
-			'Cache-Control'          => 'no-store, no-cache, must-revalidate, max-age=0',
-			'Pragma'                 => 'no-cache',
+//			'X-Frame-Options'        => 'SAMEORIGIN',
+//			'X-Content-Type-Options' => 'nosniff',
+//			'Referrer-Policy'        => 'same-origin',
+//			'Cache-Control'          => 'no-store, no-cache, must-revalidate, max-age=0',
+//			'Pragma'                 => 'no-cache',
 		]);
 
 		// Локально ослабим CSP ТОЛЬКО для этой страницы, чтобы Adminer работал
 		// (у Adminer встречаются inline-скрипты и new Function/eval).
-		$csp = implode('; ', [
-			"default-src 'self'",
-			"script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: data:",
-			"style-src 'self' 'unsafe-inline'",
-			"img-src 'self' data: blob:",
-			"connect-src 'self' https: http:",
-			"font-src 'self' data:",
-			"object-src 'none'",
-			"base-uri 'self'",
-			"frame-ancestors 'self'",
-		]);
-		$response->headers->set('Content-Security-Policy', $csp);
+//		$csp = implode('; ', [
+//			"default-src 'self'",
+//			"script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: data:",
+//			"style-src 'self' 'unsafe-inline'",
+//			"img-src 'self' data: blob:",
+//			"connect-src 'self' https: http:",
+//			"font-src 'self' data:",
+//			"object-src 'none'",
+//			"base-uri 'self'",
+//			"frame-ancestors 'self'",
+//		]);
+//		$response->headers->set('Content-Security-Policy', $csp);
 
 		return $response;
 	}
