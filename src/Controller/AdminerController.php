@@ -55,10 +55,7 @@ class AdminerController extends AbstractController
 
 		// Теперь у нас весь HTML Adminer в $sink и НИ ОДИН заголовок не ушёл клиенту
 		return new Response($sink, 200, [
-			'Content-Type' => 'text/html; charset=UTF-8',
-			// Можно добавить защитные заголовки
-			'X-Frame-Options' => 'SAMEORIGIN',
-			'X-Content-Type-Options' => 'nosniff',
+			'Content-Type' => 'text/html; charset=UTF-8'
 		]);
 	}
 }
