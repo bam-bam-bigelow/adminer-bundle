@@ -67,7 +67,9 @@ ob_start(static function (string $chunk) use (&$buffer): string {
 
 	return ''; // Ничего не отдаём клиенту
 }, 0);
-ob_implicit_flush(0);
+
+/** @noinspection PhpStrictTypeCheckingInspection */
+ob_implicit_flush(false);
 
 // Подключаем реальный adminer.php (лежит рядом, в этом же каталоге var/)
 $adminerPath = __DIR__ . '/adminer.php';
