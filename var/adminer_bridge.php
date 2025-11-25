@@ -101,9 +101,13 @@ function adminer_object() {
 	}
 
 	return new \Adminer\Plugins([
-		                            new \AdminerSandbox\AdminerLoginSsl([
-			                                                                'ca' => 'YOUR_CERTIFICATE_PATH_HERE',
-		                                                                ]),
+		                            new \AdminerSandbox\AdminerLoginSsl(
+			                            [
+				                            'key' => null,
+				                            'cert' => null,
+				                            'ca' => null,
+				                            'verify' => false,
+			                            ]),
 	                            ]);
 }
 
