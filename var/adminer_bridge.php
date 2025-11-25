@@ -106,7 +106,7 @@ function adminer_object() {
 				                            'key' => null,
 				                            'cert' => null,
 				                            'ca' => null,
-				                            'verify' => false,
+				                            'verify' => true,
 			                            ]),
 	                            ]);
 }
