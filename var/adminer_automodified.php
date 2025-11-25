@@ -459,7 +459,7 @@ description(){return$this->lang('');}function
 screenshot(){return"";}protected
 function
 lang($u,$ff=null){$qa=func_get_args();$qa[0]=idx($this->translations[LANG],$u)?:$u;return
-call_user_func_array('Adminer\lang_format',$qa);}}Adminer::$instance=(function_exists('adminer_object')?adminer_object():(is_dir("adminer-plugins")||file_exists("adminer-plugins.php")?new
+call_user_func_array('Adminer\lang_format',$qa);}}Adminer::$instance=(function_exists('AdminerSandbox\adminer_object')?\AdminerSandbox\adminer_object():(is_dir("adminer-plugins")||file_exists("adminer-plugins.php")?new
 Plugins(null):new
 Adminer));SqlDriver::$drivers=array("server"=>"MySQL / MariaDB")+SqlDriver::$drivers;if(!defined('Adminer\DRIVER')){define('Adminer\DRIVER',"server");if(extension_loaded("mysqli")&&$_GET["ext"]!="pdo"){class
 Db

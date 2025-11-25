@@ -49,6 +49,7 @@ function session_regenerate_id(bool $delete_old_session = false): bool {
 	return true;
 }
 
+
 // Стартуем буфер для захвата всего вывода Adminer
 ob_start();
 
@@ -72,14 +73,40 @@ if (!file_exists($adminerPathModified)) {
 	// replace session_start() with our stub
 	$adminerCode = file_get_contents($adminerPathModified);
 	$adminerCode = preg_replace('#session_start\(\);#', '\AdminerSandbox\session_start();', $adminerCode);
-	$adminerCode = preg_replace('#session_regenerate_id\(\);#', '\AdminerSandbox\session_regenerate_id();', $adminerCode);
+	$adminerCode =
+		preg_replace('#session_regenerate_id\(\);#', '\AdminerSandbox\session_regenerate_id();', $adminerCode);
 	$adminerCode = preg_replace('#ob_flush\(\);#', '\AdminerSandbox\ob_flush();', $adminerCode);
 	$adminerCode = preg_replace('#;flush\(\);#', '; \AdminerSandbox\flush();', $adminerCode);
 	$adminerCode = preg_replace('#session_write_close\(\);#', '\AdminerSandbox\session_write_close();', $adminerCode);
 	$adminerCode = preg_replace('#}header\(#', '} \AdminerSandbox\header(', $adminerCode);
 	$adminerCode = preg_replace('#;header\(#', '; \AdminerSandbox\header(', $adminerCode);
+
+	// function_exists('AdminerSandbox\adminer_object')?\AdminerSandbox\adminer_object()
+	$adminerCode = preg_replace(
+		'#function_exists\(\'adminer_object\'\)#',
+		'function_exists(\'AdminerSandbox\adminer_object\')',
+		$adminerCode
+	);
+	$adminerCode = preg_replace(
+		'#adminer_object\(\)#',
+		'\AdminerSandbox\adminer_object()',
+		$adminerCode
+	);
 	file_put_contents($adminerPathModified, $adminerCode);
 }
+
+function adminer_object() {
+	foreach (glob(__DIR__ . '/adminer-plugins/*.php') as $file) {
+		include_once($file);
+	}
+
+	return new \Adminer\Plugins([
+		                            new \AdminerSandbox\AdminerLoginSsl([
+			                                                                'ca' => 'YOUR_CERTIFICATE_PATH_HERE',
+		                                                                ]),
+	                            ]);
+}
+
 
 // Подключаем модифицированный файл Adminer
 require $adminerPathModified;
