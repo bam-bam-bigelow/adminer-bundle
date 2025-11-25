@@ -56,8 +56,8 @@ ob_start();
 ob_implicit_flush(false);
 
 // Подключаем реальный adminer.php (лежит рядом, в этом же каталоге var/)
-$adminerPath = __DIR__ . '/adminer.php';
-$adminerPathModified = __DIR__ . '/adminer_modified.php';
+$adminerPath = __DIR__ . '/adminer-5.4.1-mysql-en.php';
+$adminerPathModified = __DIR__ . '/adminer_modified.php---';
 
 if (!\is_file($adminerPath)) {
 	// Завершаем буфер и бросаем исключение в «верхний» код
